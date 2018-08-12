@@ -2,6 +2,8 @@ import numpy as np
 from scipy.io import loadmat
 from scipy.optimize import minimize
 
+import functools
+
 
 def preprocess():
     """ 
@@ -110,11 +112,44 @@ def blrObjFunction(initialWeights, *args):
     error = 0
     error_grad = np.zeros((n_features + 1, 1))
 
+    initialWeights = np.reshape(initialWeights, (n_features + 1, 1))
+
     ##################
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
+    ones_column = np.ones( (train_data.shape[0], 1) )
+    train_data_bias = np.hstack( (ones_column, train_data) )
+    # print("ANOTHERPLEAS\n\n")
+    # print(initialWeights.T, train_data_bias, np.multiply(initialWeights.T, train_data_bias))
+    # theta = sigmoid(np.matmul(train_data_bias, initialWeights))
+    print("before theta")
+    theta = sigmoid(np.dot(train_data_bias, initialWeights))
+    print("after theta")
 
+    one_minus_theta = 1 - theta
+    log_theta = np.log(theta)
+    log_1_minus_theta = np.log(one_minus_theta)
+
+    one_minus_label = 1 - labeli
+    print("before error")
+    error = (-1 / n_data) * (np.dot(labeli.T, log_theta) + np.dot(one_minus_label.T, log_1_minus_theta))
+    print("after error")
+    
+    # theta_and_labels = list(zip(theta, labeli))
+    # p_likelihood = functools.reduce(lambda prod, theta_n: prod * (theta_n[0] ** theta_n[1] * (1 - theta_n[0]) ** theta_n[1]), theta_and_labels, 1)
+    # error = -1 * np.log(p_likelihood) / n_data
+
+    # {yn ln θn + (1 − yn) ln(1 − θn)}
+
+
+    # error_summation = functools.reduce(lambda summation, theta_n: summation + (theta_n[1] * np.log(theta_n[0]) + (1 - theta_n[1]) * np.log(1 - theta_n[0]) ) )
+    print("before grad")
+    print(theta, labeli, train_data_bias, n_data)
+    error_grad = ((1 / n_data) * np.dot((theta - labeli).T, train_data_bias)).flatten()
+    # error_grad = np.sum(np.multiply((theta - labeli),train_data_bias),axis=0)/n_data
+    print("after grad")
+    print(error)
     return error, error_grad
 
 
@@ -134,6 +169,13 @@ def blrPredict(W, data):
 
     """
     label = np.zeros((data.shape[0], 1))
+
+    ones_column = np.ones( (data.shape[0], 1) )
+    data_bias = np.hstack( (ones_column, data) )
+
+    predictions = sigmoid(W.T, data_bias)
+
+    label = np.argmax(predictions, axis=1)
 
     ##################
     # YOUR CODE HERE #
