@@ -179,6 +179,8 @@ def mlrObjFunction(params, *args):
         error_grad: the vector of size (D+1) x 10 representing the gradient of
                     error function
     """
+    train_data, labeli = args
+
     n_data = train_data.shape[0]
     n_feature = train_data.shape[1]
     error = 0
@@ -188,8 +190,20 @@ def mlrObjFunction(params, *args):
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
+    initialWeights = np.reshape(params, (n_feature + 1, n_class))
 
-    return error, error_grad
+    ones_column = np.ones( (train_data.shape[0], 1) )
+    train_data_bias = np.hstack( (ones_column, train_data) )
+
+    theta = np.exp(np.dot(train_data_bias, initialWeights)) / np.reshape(np.sum(np.exp(np.dot(train_data_bias, initialWeights)), axis=1), (train_data.shape[0], 1))
+
+    log_theta = np.log(theta)
+
+    error = -1 * np.sum(np.multiply(labeli, log_theta))
+
+    error_grad = np.matmul(train_data_bias.T, theta - labeli)
+
+    return error, error_grad.flatten()
 
 
 def mlrPredict(W, data):
@@ -213,6 +227,11 @@ def mlrPredict(W, data):
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
+    ones_column = np.ones( (data.shape[0], 1) )
+    data_bias = np.hstack( (ones_column, data) )
+
+    softmax = np.exp(np.dot(data_bias, W)) / np.reshape(np.sum(np.exp(np.dot(data_bias,W)), axis=1), (data.shape[0], 1))
+    label =  np.reshape(np.argmax(softmax, axis=1), (data.shape[0], 1))
 
     return label
 
@@ -238,7 +257,7 @@ for i in range(n_class):
 # Logistic Regression with Gradient Descent
 W = np.zeros((n_feature + 1, n_class))
 initialWeights = np.zeros((n_feature + 1, 1))
-opts = {'maxiter': 20}
+opts = {'maxiter': 100}
 for i in range(n_class):
     labeli = Y[:, i].reshape(n_train, 1)
     args = (train_data, labeli)
