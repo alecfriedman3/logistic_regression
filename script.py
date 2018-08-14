@@ -276,6 +276,13 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == vali
 predicted_label = blrPredict(W, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
 
+# Pickle
+import pickle
+params = {
+    "W": W
+}
+pickle.dump(params, open( "params.pickle", "wb" ))
+
 """
 Script for Support Vector Machine
 """
