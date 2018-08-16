@@ -1,1 +1,5 @@
 tmp.py
+
+report/*
+!report/report.tex
+!report/results
