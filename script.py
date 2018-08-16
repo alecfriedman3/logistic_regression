@@ -276,6 +276,13 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == vali
 predicted_label = blrPredict(W, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
 
+# Pickle
+import pickle
+params = {
+    "W": W
+}
+pickle.dump(params, open( "params.pickle", "wb" ))
+
 """
 Script for Support Vector Machine
 """
@@ -290,48 +297,48 @@ clf = SVC(kernel='linear')
 clf.fit(train_data, train_label.flatten())
 
 predicted_label = clf.predict(train_data)
-print('\n SVM Training set Accuracy with linear kernel:' + str(100 * np.mean((predicted_label == train_label.flatten()).astype(float))) + '%')
+print('\n SVM Training set Accuracy with linear kernel: ' + str(100 * np.mean((predicted_label == train_label.flatten()).astype(float))) + '%')
 predicted_label = clf.predict(validation_data)
-print('\n SVM Validation set Accuracy with linear kernel:' + str(100 * np.mean((predicted_label == validation_label.flatten()).astype(float))) + '%')
+print('\n SVM Validation set Accuracy with linear kernel: ' + str(100 * np.mean((predicted_label == validation_label.flatten()).astype(float))) + '%')
 predicted_label = clf.predict(test_data)
-print('\n SVM Testing set Accuracy with linear kernel:' + str(100 * np.mean((predicted_label == test_label.flatten()).astype(float))) + '%')
+print('\n SVM Testing set Accuracy with linear kernel: ' + str(100 * np.mean((predicted_label == test_label.flatten()).astype(float))) + '%')
 
 # gamma setting to 1
 clf = SVC(gamma=1.0)
 clf.fit(train_data, train_label.flatten())
 
 predicted_label = clf.predict(train_data)
-print('\n SVM Training set Accuracy with rbf and gamma = 1.0:' + str(100 * np.mean((predicted_label == train_label.flatten()).astype(float))) + '%')
+print('\n SVM Training set Accuracy with rbf and gamma = 1.0: ' + str(100 * np.mean((predicted_label == train_label.flatten()).astype(float))) + '%')
 predicted_label = clf.predict(validation_data)
-print('\n SVM Validation set Accuracy with rbf and gamma = 1.0:' + str(100 * np.mean((predicted_label == validation_label.flatten()).astype(float))) + '%')
+print('\n SVM Validation set Accuracy with rbf and gamma = 1.0: ' + str(100 * np.mean((predicted_label == validation_label.flatten()).astype(float))) + '%')
 predicted_label = clf.predict(test_data)
-print('\n SVM Testing set Accuracy with rbf and gamma = 1.0:' + str(100 * np.mean((predicted_label == test_label.flatten()).astype(float))) + '%')
+print('\n SVM Testing set Accuracy with rbf and gamma = 1.0: ' + str(100 * np.mean((predicted_label == test_label.flatten()).astype(float))) + '%')
 
 # rbf with defaults
 clf = SVC()
 clf.fit(train_data, train_label.flatten())
 
 predicted_label = clf.predict(train_data)
-print('\n SVM Training set Accuracy with rbf defaults:' + str(100 * np.mean((predicted_label == train_label.flatten()).astype(float))) + '%')
+print('\n SVM Training set Accuracy with rbf defaults: ' + str(100 * np.mean((predicted_label == train_label.flatten()).astype(float))) + '%')
 predicted_label = clf.predict(validation_data)
-print('\n SVM Validation set Accuracy with rbf defaults:' + str(100 * np.mean((predicted_label == validation_label.flatten()).astype(float))) + '%')
+print('\n SVM Validation set Accuracy with rbf defaults: ' + str(100 * np.mean((predicted_label == validation_label.flatten()).astype(float))) + '%')
 predicted_label = clf.predict(test_data)
-print('\n SVM Testing set Accuracy with rbf defaults:' + str(100 * np.mean((predicted_label == test_label.flatten()).astype(float))) + '%')
+print('\n SVM Testing set Accuracy with rbf defaults: ' + str(100 * np.mean((predicted_label == test_label.flatten()).astype(float))) + '%')
 
 # varying C
 C_values = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 C_accuracies = {
-    train: [],
-    validation: [],
-    test: []
+    "train": [],
+    "validation": [],
+    "test": []
 }
 for c in C_values:
     clf = SVC(C=c)
     clf.fit(train_data, train_label.flatten())
 
-    append(C_accuracies.train, np.mean((clf.predict(train_data) == train_label.flatten()).astype(float)))
-    append(C_accuracies.validation, np.mean((clf.predict(validation_data) == validation_label.flatten()).astype(float)))
-    append(C_accuracies.test, np.mean((clf.predict(test_data) == test_label.flatten()).astype(float)))
+    C_accuracies["train"].append(np.mean((clf.predict(train_data) == train_label.flatten()).astype(float)))
+    C_accuracies["validation"].append(np.mean((clf.predict(validation_data) == validation_label.flatten()).astype(float)))
+    C_accuracies["test"].append(np.mean((clf.predict(test_data) == test_label.flatten()).astype(float)))
 
 print("Accuracies for C values", C_values, " is:", C_accuracies)
 
